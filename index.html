@@ -2,991 +2,797 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vital Check — Bloodwork Analysis</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Vital Check — Know What's Actually Going On Inside</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne+Mono&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --bg: #0b0d0f;
-  --surface: #111418;
-  --surface2: #181c22;
-  --border: #1e2530;
-  --border2: #2a3342;
-  --green: #00c48c;
-  --green-dim: #00c48c18;
-  --green-glow: rgba(0,196,140,0.12);
-  --amber: #f5a623;
-  --red: #e05c5c;
-  --text: #eef0f4;
-  --muted: #5a6478;
-  --subtle: #8492a6;
-  --serif: 'Playfair Display', Georgia, serif;
-  --mono: 'IBM Plex Mono', monospace;
-  --sans: 'IBM Plex Sans', sans-serif;
-}
-
-html { background: var(--bg); scroll-behavior: smooth; }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--sans);
-  min-height: 100vh;
-  line-height: 1.6;
-}
-
-/* ── GRID TEXTURE ── */
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background-image:
-    linear-gradient(rgba(0,196,140,0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,196,140,0.025) 1px, transparent 1px);
-  background-size: 48px 48px;
-  pointer-events: none; z-index: 0;
-}
-
-/* ── LAYOUT ── */
-.app { position: relative; z-index: 1; display: flex; flex-direction: column; min-height: 100vh; }
-
-/* ── HEADER ── */
-header {
-  padding: 20px 32px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-  background: rgba(11,13,15,0.92);
-  backdrop-filter: blur(12px);
-  position: sticky; top: 0; z-index: 100;
-}
-
-.logo {
-  display: flex; align-items: center; gap: 12px;
-}
-
-.logo-mark {
-  width: 32px; height: 32px;
-  border: 1.5px solid var(--green);
-  border-radius: 6px;
-  display: flex; align-items: center; justify-content: center;
-  position: relative;
-}
-
-.logo-mark::after {
-  content: '';
-  width: 8px; height: 8px;
-  background: var(--green);
-  border-radius: 50%;
-  animation: pulse-dot 2.5s ease-in-out infinite;
-}
-
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.3; transform: scale(0.6); }
-}
-
-.logo-text {
-  font-family: var(--mono);
-  font-size: 13px; font-weight: 500;
-  letter-spacing: 0.18em;
-  color: var(--text);
-  text-transform: uppercase;
-}
-
-.logo-sub {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--muted);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  display: block;
-}
-
-.header-badge {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--green);
-  border: 1px solid var(--green);
-  border-radius: 20px;
-  padding: 4px 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  opacity: 0.7;
-}
-
-/* ── HERO ── */
-.hero {
-  padding: 80px 32px 60px;
-  max-width: 860px;
-  margin: 0 auto;
-  width: 100%;
-  text-align: center;
-}
-
-.hero-eyebrow {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.28em;
-  color: var(--green);
-  text-transform: uppercase;
-  margin-bottom: 24px;
-  opacity: 0.8;
-}
-
-.hero h1 {
-  font-family: var(--serif);
-  font-size: clamp(36px, 6vw, 58px);
-  font-weight: 400;
-  line-height: 1.15;
-  color: var(--text);
-  margin-bottom: 20px;
-}
-
-.hero h1 em {
-  font-style: italic;
-  color: var(--green);
-}
-
-.hero p {
-  font-size: 16px;
-  color: var(--subtle);
-  max-width: 540px;
-  margin: 0 auto 48px;
-  font-weight: 300;
-  line-height: 1.75;
-}
-
-.hero-stats {
-  display: flex;
-  justify-content: center;
-  gap: 1px;
-  margin-bottom: 56px;
-  max-width: 480px;
-  margin-left: auto; margin-right: auto;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--border);
-}
-
-.stat {
-  flex: 1;
-  background: var(--surface);
-  padding: 18px 16px;
-  text-align: center;
-}
-
-.stat-num {
-  font-family: var(--serif);
-  font-size: 30px;
-  color: var(--green);
-  display: block;
-  line-height: 1;
-  margin-bottom: 4px;
-}
-
-.stat-label {
-  font-family: var(--mono);
-  font-size: 8px;
-  color: var(--muted);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-/* ── MAIN INTERFACE ── */
-.interface {
-  max-width: 860px;
-  margin: 0 auto;
-  width: 100%;
-  padding: 0 32px 80px;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  flex: 1;
-}
-
-/* ── CONTEXT PANEL ── */
-.context-panel {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px 10px 0 0;
-  border-bottom: 1px solid var(--border2);
-  padding: 24px 28px;
-}
-
-.panel-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.22em;
-  color: var(--muted);
-  text-transform: uppercase;
-  margin-bottom: 16px;
-  display: flex; align-items: center; gap: 8px;
-}
-
-.panel-label::before {
-  content: '';
-  width: 16px; height: 1px;
-  background: var(--border2);
-}
-
-.context-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.context-grid .full { grid-column: 1 / -1; }
-
-input, select, textarea {
-  width: 100%;
-  background: var(--bg);
-  border: 1px solid var(--border2);
-  border-radius: 6px;
-  padding: 10px 14px;
-  font-family: var(--sans);
-  font-size: 13px;
-  color: var(--text);
-  font-weight: 300;
-  outline: none;
-  transition: border-color 0.2s;
-  -webkit-appearance: none;
-}
-
-input::placeholder, textarea::placeholder { color: var(--muted); }
-input:focus, select:focus, textarea:focus { border-color: var(--green); }
-
-select { cursor: pointer; }
-select option { background: var(--surface2); }
-
-textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
-
-.field-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.15em;
-  color: var(--muted);
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-
-.field { display: flex; flex-direction: column; }
-
-/* ── LAB INPUT ── */
-.lab-panel {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-top: none;
-  padding: 24px 28px;
-}
-
-.lab-textarea {
-  min-height: 220px;
-  font-family: var(--mono);
-  font-size: 12px;
-  line-height: 1.8;
-}
-
-/* ── SUBMIT ── */
-.submit-panel {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-top: none;
-  border-radius: 0 0 10px 10px;
-  padding: 20px 28px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.submit-hint {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: 0.08em;
-  line-height: 1.5;
-}
-
-.btn-analyze {
-  background: var(--green);
-  color: #000;
-  border: none;
-  border-radius: 6px;
-  padding: 14px 32px;
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: box-shadow 0.2s, transform 0.1s, opacity 0.2s;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.btn-analyze:hover { box-shadow: 0 0 24px var(--green-glow); }
-.btn-analyze:active { transform: scale(0.97); }
-.btn-analyze:disabled { opacity: 0.3; cursor: not-allowed; }
-
-/* ── RESPONSE ── */
-.response-wrap {
-  margin-top: 32px;
-  display: none;
-  animation: fadeUp 0.4s ease;
-}
-
-.response-wrap.visible { display: block; }
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.response-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 28px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px 10px 0 0;
-  border-bottom: 1px solid var(--border2);
-}
-
-.response-label {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: var(--green);
-  text-transform: uppercase;
-}
-
-.response-actions {
-  display: flex; gap: 8px;
-}
-
-.btn-copy {
-  background: none;
-  border: 1px solid var(--border2);
-  border-radius: 5px;
-  padding: 6px 14px;
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--subtle);
-  cursor: pointer;
-  transition: all 0.15s;
-  letter-spacing: 0.08em;
-}
-
-.btn-copy:hover { border-color: var(--green); color: var(--green); }
-.btn-copy.copied { border-color: var(--green); color: var(--green); background: var(--green-dim); }
-
-.btn-new {
-  background: none;
-  border: 1px solid var(--border2);
-  border-radius: 5px;
-  padding: 6px 14px;
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--subtle);
-  cursor: pointer;
-  transition: all 0.15s;
-  letter-spacing: 0.08em;
-}
-
-.btn-new:hover { border-color: var(--subtle); color: var(--text); }
-
-.response-body {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-top: none;
-  border-radius: 0 0 10px 10px;
-  padding: 32px 36px;
-}
-
-/* ── MARKDOWN RENDERING ── */
-.response-body h2 {
-  font-family: var(--serif);
-  font-size: 22px;
-  font-weight: 400;
-  color: var(--text);
-  margin: 32px 0 12px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border2);
-}
-
-.response-body h2:first-child { margin-top: 0; }
-
-.response-body h3 {
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--green);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  margin: 24px 0 10px;
-}
-
-.response-body p {
-  font-size: 14px;
-  color: #9aaabb;
-  line-height: 1.8;
-  margin-bottom: 12px;
-  font-weight: 300;
-}
-
-.response-body strong {
-  color: var(--text);
-  font-weight: 500;
-}
-
-.response-body ul, .response-body ol {
-  padding-left: 20px;
-  margin-bottom: 12px;
-}
-
-.response-body li {
-  font-size: 14px;
-  color: #9aaabb;
-  line-height: 1.75;
-  margin-bottom: 4px;
-  font-weight: 300;
-}
-
-.response-body hr {
-  border: none;
-  border-top: 1px solid var(--border2);
-  margin: 28px 0;
-}
-
-.response-body table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 16px 0 24px;
-  font-size: 13px;
-}
-
-.response-body th {
-  background: var(--surface2);
-  color: var(--text);
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 10px 14px;
-  text-align: left;
-  border: 1px solid var(--border2);
-}
-
-.response-body td {
-  padding: 9px 14px;
-  border: 1px solid var(--border);
-  color: #9aaabb;
-  font-size: 13px;
-  vertical-align: top;
-}
-
-.response-body tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
-
-.response-body blockquote {
-  border-left: 3px solid var(--green);
-  padding: 12px 16px;
-  margin: 16px 0;
-  background: var(--green-dim);
-  border-radius: 0 6px 6px 0;
-}
-
-.response-body blockquote p { color: #aaccbb; margin: 0; }
-
-/* ── LOADING ── */
-.loading-state {
-  padding: 60px 36px;
-  text-align: center;
-  display: none;
-}
-
-.loading-state.visible { display: block; }
-
-.loading-bars {
-  display: flex;
-  justify-content: center;
-  gap: 4px;
-  margin-bottom: 20px;
-}
-
-.bar {
-  width: 3px;
-  height: 28px;
-  background: var(--green);
-  border-radius: 2px;
-  animation: bar-pulse 1.2s ease-in-out infinite;
-  opacity: 0.3;
-}
-
-.bar:nth-child(1) { animation-delay: 0s; }
-.bar:nth-child(2) { animation-delay: 0.15s; }
-.bar:nth-child(3) { animation-delay: 0.3s; }
-.bar:nth-child(4) { animation-delay: 0.45s; }
-.bar:nth-child(5) { animation-delay: 0.6s; }
-
-@keyframes bar-pulse {
-  0%, 100% { opacity: 0.15; transform: scaleY(0.6); }
-  50% { opacity: 1; transform: scaleY(1); }
-}
-
-.loading-text {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--muted);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-}
-
-.loading-subtext {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 8px;
-  font-weight: 300;
-}
-
-/* ── ERROR ── */
-.error-state {
-  padding: 32px 36px;
-  display: none;
-}
-
-.error-state.visible { display: block; }
-
-.error-box {
-  border: 1px solid #8b1a1a44;
-  background: #8b1a1a0a;
-  border-radius: 6px;
-  padding: 16px 20px;
-  font-family: var(--mono);
-  font-size: 12px;
-  color: #e05c5c;
-}
-
-/* ── API KEY NOTICE ── */
-.api-notice {
-  background: var(--surface2);
-  border: 1px solid var(--amber);
-  border-radius: 8px;
-  padding: 16px 20px;
-  margin-bottom: 24px;
-  display: none;
-}
-
-.api-notice.visible { display: block; }
-
-.api-notice p {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--amber);
-  line-height: 1.6;
-  margin: 0;
-}
-
-.api-key-row {
-  display: flex; gap: 8px; margin-top: 10px;
-}
-
-.api-key-input {
-  flex: 1;
-  background: var(--bg);
-  border: 1px solid var(--border2);
-  border-radius: 5px;
-  padding: 8px 12px;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text);
-  outline: none;
-}
-
-.api-key-input:focus { border-color: var(--amber); }
-
-.btn-save-key {
-  background: var(--amber);
-  color: #000;
-  border: none;
-  border-radius: 5px;
-  padding: 8px 16px;
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 500;
-  cursor: pointer;
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-}
-
-/* ── FOOTER ── */
-footer {
-  border-top: 1px solid var(--border);
-  padding: 24px 32px;
-  text-align: center;
-}
-
-footer p {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: 0.08em;
-  line-height: 1.7;
-}
-
-@media (max-width: 600px) {
-  header { padding: 16px 20px; }
-  .header-badge { display: none; }
-  .hero { padding: 48px 20px 40px; }
-  .interface { padding: 0 20px 60px; }
-  .context-grid { grid-template-columns: 1fr; }
-  .context-grid .full { grid-column: 1; }
-  .submit-panel { flex-direction: column; align-items: stretch; }
-  .btn-analyze { text-align: center; }
-  .response-body { padding: 24px 20px; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080a0c;
+  --surface:#0e1114;
+  --surface2:#13171c;
+  --border:#1c2128;
+  --border2:#252d38;
+  --accent:#c8f060;
+  --accent-dim:rgba(200,240,96,0.08);
+  --accent-glow:rgba(200,240,96,0.15);
+  --amber:#f0b84a;
+  --red:#e06060;
+  --text:#e8ecf0;
+  --muted:#4a5568;
+  --subtle:#7a8898;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --mono:'Syne Mono',monospace;
+  --sans:'Syne',sans-serif;
+}
+html{background:var(--bg);scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+
+/* GRAIN OVERLAY */
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+
+/* SCREENS */
+.screen{display:none;min-height:100vh}
+.screen.active{display:block}
+
+/* ═══════════════════════════════════
+   LANDING
+═══════════════════════════════════ */
+#landing{position:relative;overflow:hidden}
+
+.land-bg{position:absolute;inset:0;z-index:0}
+.land-bg-circle{position:absolute;border-radius:50%;filter:blur(120px);opacity:0.07}
+.land-bg-circle.c1{width:600px;height:600px;background:var(--accent);top:-200px;right:-100px}
+.land-bg-circle.c2{width:400px;height:400px;background:#60a0f0;bottom:-100px;left:-100px}
+
+.land-nav{position:relative;z-index:10;padding:28px 48px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-dot{width:8px;height:8px;background:var(--accent);border-radius:50%;animation:breathe 3s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+.nav-wordmark{font-family:var(--mono);font-size:13px;letter-spacing:0.2em;color:var(--text);text-transform:uppercase}
+.nav-cta{font-family:var(--mono);font-size:11px;letter-spacing:0.12em;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:8px 18px;cursor:pointer;background:none;text-transform:uppercase;transition:all 0.2s}
+.nav-cta:hover{background:var(--accent-dim)}
+
+.land-hero{position:relative;z-index:5;max-width:900px;margin:0 auto;padding:100px 48px 80px;text-align:center}
+.land-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:0.3em;color:var(--accent);text-transform:uppercase;margin-bottom:28px;opacity:0;animation:fadeUp 0.8s 0.2s ease forwards}
+.land-h1{font-family:var(--serif);font-size:clamp(48px,8vw,88px);font-weight:300;line-height:1.08;color:var(--text);margin-bottom:28px;opacity:0;animation:fadeUp 0.8s 0.4s ease forwards}
+.land-h1 em{font-style:italic;color:var(--accent)}
+.land-h1 strong{font-weight:600}
+.land-sub{font-size:17px;color:var(--subtle);line-height:1.75;max-width:560px;margin:0 auto 20px;font-weight:400;opacity:0;animation:fadeUp 0.8s 0.6s ease forwards}
+.land-sub2{font-size:14px;color:var(--muted);line-height:1.7;max-width:500px;margin:0 auto 56px;opacity:0;animation:fadeUp 0.8s 0.7s ease forwards}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.land-proof{display:flex;justify-content:center;gap:1px;max-width:500px;margin:0 auto 56px;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden;opacity:0;animation:fadeUp 0.8s 0.8s ease forwards}
+.proof-stat{flex:1;background:var(--surface);padding:20px 16px;text-align:center}
+.proof-num{font-family:var(--serif);font-size:36px;font-weight:300;color:var(--accent);display:block;line-height:1}
+.proof-label{font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:0.2em;text-transform:uppercase;display:block;margin-top:4px}
+
+.land-btn{display:inline-flex;align-items:center;gap:12px;background:var(--accent);color:#000;border:none;border-radius:6px;padding:18px 40px;font-family:var(--mono);font-size:13px;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.25s;opacity:0;animation:fadeUp 0.8s 1s ease forwards}
+.land-btn:hover{box-shadow:0 0 40px var(--accent-glow);transform:translateY(-2px)}
+.land-btn-arrow{font-size:16px;transition:transform 0.2s}
+.land-btn:hover .land-btn-arrow{transform:translateX(4px)}
+
+.land-features{max-width:900px;margin:0 auto;padding:80px 48px;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.feature{background:var(--bg);padding:40px 32px}
+.feat-icon{font-size:24px;margin-bottom:16px;display:block}
+.feat-title{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--text);margin-bottom:10px}
+.feat-desc{font-size:13px;color:var(--subtle);line-height:1.7;font-weight:400}
+
+.land-trust{max-width:900px;margin:0 auto;padding:60px 48px;text-align:center;border-bottom:1px solid var(--border)}
+.trust-line{font-family:var(--serif);font-size:28px;font-weight:300;font-style:italic;color:var(--subtle);line-height:1.5;max-width:600px;margin:0 auto 20px}
+.trust-sub{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.15em;text-transform:uppercase}
+
+.land-footer{padding:32px 48px;text-align:center}
+.land-footer p{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.08em;line-height:1.6}
+
+/* ═══════════════════════════════════
+   SURVEY
+═══════════════════════════════════ */
+#survey{background:var(--bg)}
+
+.survey-header{padding:20px 32px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:rgba(8,10,12,0.95);backdrop-filter:blur(12px);z-index:100}
+.survey-logo{font-family:var(--mono);font-size:11px;letter-spacing:0.2em;color:var(--accent);text-transform:uppercase}
+.survey-progress-wrap{flex:1;max-width:200px;margin:0 24px;height:2px;background:var(--border)}
+.survey-progress-fill{height:100%;background:var(--accent);border-radius:1px;transition:width 0.4s cubic-bezier(0.4,0,0.2,1);box-shadow:0 0 8px var(--accent-glow)}
+.survey-step-label{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.1em}
+
+.survey-body{max-width:640px;margin:0 auto;padding:56px 32px 40px}
+.q-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:0.25em;color:var(--accent);text-transform:uppercase;margin-bottom:14px}
+.q-text{font-family:var(--serif);font-size:clamp(24px,5vw,34px);font-weight:300;line-height:1.25;color:var(--text);margin-bottom:8px}
+.q-hint{font-size:12px;color:var(--muted);font-family:var(--mono);margin-bottom:32px;letter-spacing:0.05em}
+
+.options-list{display:flex;flex-direction:column;gap:10px;margin-bottom:36px}
+.opt-btn{display:flex;align-items:flex-start;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 18px;cursor:pointer;text-align:left;transition:border-color 0.15s,background 0.15s;width:100%;-webkit-tap-highlight-color:transparent}
+.opt-btn:hover:not(.selected){border-color:var(--border2)}
+.opt-btn.selected{border-color:var(--accent);background:var(--accent-dim)}
+.opt-check{width:20px;height:20px;border-radius:4px;border:1.5px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s;margin-top:1px}
+.opt-btn.selected .opt-check{background:var(--accent);border-color:var(--accent)}
+.opt-check-mark{opacity:0;color:#000;font-size:11px;font-weight:700;transition:opacity 0.1s}
+.opt-btn.selected .opt-check-mark{opacity:1}
+.opt-text{font-size:15px;color:#99aabb;line-height:1.45;font-weight:400;flex:1}
+.opt-btn.selected .opt-text{color:var(--text)}
+
+.survey-nav{display:flex;justify-content:space-between;align-items:center}
+.btn-back{background:none;border:none;color:var(--muted);font-family:var(--mono);font-size:11px;cursor:pointer;padding:8px 0;letter-spacing:0.08em;transition:color 0.15s}
+.btn-back:hover{color:var(--subtle)}
+.btn-back:disabled{opacity:0.2;cursor:default}
+.btn-next{background:var(--accent);color:#000;border:none;border-radius:6px;padding:14px 28px;font-family:var(--mono);font-size:12px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.15s}
+.btn-next:disabled{opacity:0.25;cursor:not-allowed}
+.btn-next:not(:disabled):hover{box-shadow:0 0 20px var(--accent-glow)}
+
+/* ═══════════════════════════════════
+   BRANCH SCREENS
+═══════════════════════════════════ */
+#no-bloodwork,#has-bloodwork{background:var(--bg)}
+.branch-header{padding:20px 32px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;background:rgba(8,10,12,0.95);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100}
+.branch-logo{font-family:var(--mono);font-size:11px;letter-spacing:0.2em;color:var(--accent);text-transform:uppercase}
+.branch-body{max-width:640px;margin:0 auto;padding:56px 32px 60px}
+.branch-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:0.25em;color:var(--accent);text-transform:uppercase;margin-bottom:14px}
+.branch-title{font-family:var(--serif);font-size:32px;font-weight:300;color:var(--text);margin-bottom:12px}
+.branch-sub{font-size:14px;color:var(--subtle);line-height:1.7;margin-bottom:36px;font-weight:400}
+
+/* FILE DROP */
+.drop-zone{border:2px dashed var(--border2);border-radius:10px;padding:48px 32px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--surface);position:relative;margin-bottom:24px}
+.drop-zone:hover,.drop-zone.drag-over{border-color:var(--accent);background:var(--accent-dim)}
+.drop-icon{font-size:36px;margin-bottom:14px;display:block;opacity:0.5}
+.drop-title{font-family:var(--serif);font-size:20px;font-weight:300;color:var(--text);margin-bottom:6px}
+.drop-sub{font-size:12px;color:var(--muted);font-family:var(--mono);letter-spacing:0.05em}
+.drop-formats{margin-top:10px;font-size:10px;color:var(--muted);font-family:var(--mono);letter-spacing:0.08em}
+#fileInput{position:absolute;inset:0;opacity:0;cursor:pointer}
+.file-selected{background:var(--surface2);border:1px solid var(--accent);border-radius:8px;padding:14px 18px;display:none;align-items:center;gap:12px;margin-bottom:16px}
+.file-selected.visible{display:flex}
+.file-name{font-family:var(--mono);font-size:11px;color:var(--accent);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-remove{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0;line-height:1}
+.file-remove:hover{color:var(--red)}
+
+.privacy-note{background:var(--surface2);border:1px solid var(--border2);border-left:3px solid var(--accent);border-radius:6px;padding:14px 18px;margin-bottom:28px}
+.privacy-note p{font-size:12px;color:var(--subtle);line-height:1.6;font-family:var(--mono)}
+.privacy-note strong{color:var(--accent)}
+
+/* LAB TEXT FALLBACK */
+.lab-manual{display:none}
+.lab-manual.visible{display:block}
+.toggle-manual{font-family:var(--mono);font-size:11px;color:var(--muted);background:none;border:none;cursor:pointer;letter-spacing:0.08em;text-decoration:underline;text-underline-offset:3px;margin-bottom:16px}
+.toggle-manual:hover{color:var(--subtle)}
+textarea.lab-text{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:16px 18px;font-family:var(--mono);font-size:12px;color:var(--text);line-height:1.8;outline:none;resize:vertical;min-height:180px;transition:border-color 0.2s;margin-bottom:24px}
+textarea.lab-text:focus{border-color:var(--accent)}
+textarea.lab-text::placeholder{color:var(--muted)}
+
+.btn-analyze{width:100%;background:var(--accent);color:#000;border:none;border-radius:8px;padding:18px;font-family:var(--mono);font-size:13px;font-weight:400;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:all 0.2s}
+.btn-analyze:hover{box-shadow:0 0 30px var(--accent-glow)}
+.btn-analyze:disabled{opacity:0.3;cursor:not-allowed}
+
+/* ═══════════════════════════════════
+   PROCESSING
+═══════════════════════════════════ */
+#processing{background:var(--bg);display:flex;align-items:center;justify-content:center}
+.proc-inner{text-align:center;padding:48px 32px}
+.proc-visual{display:flex;justify-content:center;gap:6px;margin-bottom:32px}
+.proc-bar{width:4px;height:40px;background:var(--accent);border-radius:2px;animation:proc-pulse 1.4s ease-in-out infinite;opacity:0.2}
+.proc-bar:nth-child(1){animation-delay:0s}
+.proc-bar:nth-child(2){animation-delay:0.2s}
+.proc-bar:nth-child(3){animation-delay:0.4s}
+.proc-bar:nth-child(4){animation-delay:0.6s}
+.proc-bar:nth-child(5){animation-delay:0.8s}
+.proc-bar:nth-child(6){animation-delay:0.6s}
+.proc-bar:nth-child(7){animation-delay:0.4s}
+@keyframes proc-pulse{0%,100%{opacity:0.15;transform:scaleY(0.5)}50%{opacity:1;transform:scaleY(1)}}
+.proc-title{font-family:var(--serif);font-size:28px;font-weight:300;color:var(--text);margin-bottom:10px}
+.proc-sub{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase}
+.proc-steps{margin-top:32px;display:flex;flex-direction:column;gap:8px;max-width:280px;margin-left:auto;margin-right:auto}
+.proc-step{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.08em;opacity:0;animation:fadeIn 0.5s ease forwards}
+.proc-step.active{color:var(--accent);opacity:1}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ═══════════════════════════════════
+   RESULTS
+═══════════════════════════════════ */
+#results{background:var(--bg)}
+.results-header{padding:20px 32px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(8,10,12,0.95);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100}
+.results-logo{font-family:var(--mono);font-size:11px;letter-spacing:0.2em;color:var(--accent);text-transform:uppercase}
+.results-actions{display:flex;gap:8px}
+.btn-download{background:var(--accent);color:#000;border:none;border-radius:5px;padding:9px 20px;font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s}
+.btn-download:hover{box-shadow:0 0 16px var(--accent-glow)}
+.btn-restart{background:none;border:1px solid var(--border2);border-radius:5px;padding:9px 16px;font-family:var(--mono);font-size:10px;color:var(--subtle);cursor:pointer;letter-spacing:0.08em;transition:all 0.15s}
+.btn-restart:hover{border-color:var(--subtle);color:var(--text)}
+
+.results-body{max-width:760px;margin:0 auto;padding:48px 32px 80px}
+
+/* Markdown rendering */
+.results-content h2{font-family:var(--serif);font-size:26px;font-weight:300;color:var(--text);margin:40px 0 14px;padding-bottom:10px;border-bottom:1px solid var(--border2)}
+.results-content h2:first-child{margin-top:0}
+.results-content h3{font-family:var(--mono);font-size:10px;font-weight:400;color:var(--accent);letter-spacing:0.2em;text-transform:uppercase;margin:28px 0 10px}
+.results-content p{font-size:14px;color:#8899aa;line-height:1.85;margin-bottom:14px;font-weight:400}
+.results-content strong{color:var(--text);font-weight:600}
+.results-content em{font-style:italic;color:#aabbcc}
+.results-content ul,.results-content ol{padding-left:20px;margin-bottom:14px}
+.results-content li{font-size:14px;color:#8899aa;line-height:1.8;margin-bottom:6px}
+.results-content hr{border:none;border-top:1px solid var(--border2);margin:32px 0}
+.results-content blockquote{border-left:3px solid var(--accent);padding:12px 18px;background:var(--accent-dim);border-radius:0 6px 6px 0;margin:16px 0}
+.results-content blockquote p{color:#aaccaa;margin:0}
+.results-content table{width:100%;border-collapse:collapse;margin:16px 0 24px;font-size:13px}
+.results-content th{background:var(--surface2);color:var(--text);font-family:var(--mono);font-size:9px;font-weight:400;letter-spacing:0.15em;text-transform:uppercase;padding:10px 14px;text-align:left;border:1px solid var(--border2)}
+.results-content td{padding:9px 14px;border:1px solid var(--border);color:#8899aa;font-size:13px;line-height:1.5}
+.results-content tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+
+/* API KEY */
+.key-overlay{position:fixed;inset:0;background:rgba(8,10,12,0.95);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;padding:24px}
+.key-card{background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:40px 36px;max-width:480px;width:100%}
+.key-title{font-family:var(--serif);font-size:28px;font-weight:300;color:var(--text);margin-bottom:10px}
+.key-sub{font-size:13px;color:var(--subtle);line-height:1.7;margin-bottom:24px}
+.key-input{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:12px 16px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;margin-bottom:12px;transition:border-color 0.2s}
+.key-input:focus{border-color:var(--accent)}
+.key-input::placeholder{color:var(--muted)}
+.key-save{width:100%;background:var(--accent);color:#000;border:none;border-radius:6px;padding:14px;font-family:var(--mono);font-size:12px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s}
+.key-save:hover{box-shadow:0 0 20px var(--accent-glow)}
+.key-note{font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center;margin-top:12px;line-height:1.5}
+
+@media(max-width:600px){
+  .land-nav{padding:16px 20px}
+  .land-hero{padding:60px 20px 48px}
+  .land-features{grid-template-columns:1fr;padding:48px 20px}
+  .land-trust,.land-footer{padding:40px 20px}
+  .survey-body,.branch-body,.results-body{padding:40px 20px 48px}
+  .results-header{padding:16px 20px}
+  .land-btn{width:100%;justify-content:center}
 }
 </style>
 </head>
 <body>
-<div class="app">
 
-  <header>
-    <div class="logo">
-      <div class="logo-mark"></div>
-      <div>
-        <span class="logo-text">Vital Check</span>
-        <span class="logo-sub">Bloodwork Analysis</span>
-      </div>
+<!-- API KEY OVERLAY -->
+<div class="key-overlay" id="keyOverlay" style="display:none">
+  <div class="key-card">
+    <h2 class="key-title">One quick thing</h2>
+    <p class="key-sub">Vital Check uses the Anthropic AI API to analyze your results. You'll need an API key from <strong style="color:var(--accent)">console.anthropic.com</strong> — it takes 2 minutes to get one. Your key stays in your browser only.</p>
+    <input type="password" class="key-input" id="keyInput" placeholder="sk-ant-api03-..." />
+    <button class="key-save" onclick="saveKey()">Save & Continue →</button>
+    <p class="key-note">Your key is stored locally in your browser.<br>It is never sent to any server except Anthropic's API.</p>
+  </div>
+</div>
+
+<!-- ═══════════ LANDING ═══════════ -->
+<div class="screen active" id="landing">
+  <nav class="land-nav">
+    <div class="nav-logo">
+      <div class="nav-dot"></div>
+      <span class="nav-wordmark">Vital Check</span>
     </div>
-    <span class="header-badge">AI-Powered</span>
-  </header>
+    <button class="nav-cta" onclick="startSurvey()">Start Free →</button>
+  </nav>
 
-  <div class="hero">
-    <div class="hero-eyebrow">Personalized Lab Interpretation</div>
-    <h1>Your bloodwork,<br><em>actually explained.</em></h1>
-    <p>Paste your lab results and get a plain-English analysis with specific findings, clinical context, and prioritized next steps.</p>
-    <div class="hero-stats">
-      <div class="stat"><span class="stat-num">40+</span><span class="stat-label">Biomarkers</span></div>
-      <div class="stat"><span class="stat-num">5</span><span class="stat-label">Sections</span></div>
-      <div class="stat"><span class="stat-num">0</span><span class="stat-label">Sign-ups</span></div>
+  <div class="land-hero">
+    <div class="land-eyebrow">Personalized Bloodwork Intelligence</div>
+    <h1 class="land-h1">Most men don't go to the doctor<br>until something <em>breaks.</em><br><strong>Don't be that guy.</strong></h1>
+    <p class="land-sub">Your body has been sending signals for years. Tired for no reason. Can't unwind. Not quite yourself. Those aren't just life — they're measurable. And measurable means fixable.</p>
+    <p class="land-sub2">Answer 13 questions. Get a clear picture of what to test, what it means, and what to do about it. No appointment. No insurance. No runaround.</p>
+
+    <div class="land-proof">
+      <div class="proof-stat"><span class="proof-num">13</span><span class="proof-label">Questions</span></div>
+      <div class="proof-stat"><span class="proof-num">3</span><span class="proof-label">Minutes</span></div>
+      <div class="proof-stat"><span class="proof-num">0</span><span class="proof-label">Sign-ups</span></div>
+    </div>
+
+    <button class="land-btn" onclick="startSurvey()">
+      Find Out What's Going On
+      <span class="land-btn-arrow">→</span>
+    </button>
+  </div>
+
+  <div class="land-features">
+    <div class="feature">
+      <span class="feat-icon">🔬</span>
+      <h3 class="feat-title">If you've had bloodwork</h3>
+      <p class="feat-desc">Upload your results. We strip out your name and personal info, then analyze every marker against functional optimal ranges — not just the lab's standard reference intervals.</p>
+    </div>
+    <div class="feature">
+      <span class="feat-icon">📋</span>
+      <h3 class="feat-title">If you haven't tested yet</h3>
+      <p class="feat-desc">We build a targeted panel based on your profile — a comprehensive recommendation and a budget version for what matters most. You take it to any lab or order it yourself.</p>
+    </div>
+    <div class="feature">
+      <span class="feat-icon">📄</span>
+      <h3 class="feat-title">A report you can actually use</h3>
+      <p class="feat-desc">Plain English. Specific next steps. Named supplements, specialist types, and follow-up tests. Something you can read, save, and bring to a doctor.</p>
     </div>
   </div>
 
-  <div class="interface">
-
-    <!-- API KEY NOTICE -->
-    <div class="api-notice visible" id="apiNotice">
-      <p>⚠ An Anthropic API key is required to use this tool. Your key is stored only in your browser and never sent anywhere except the Anthropic API.</p>
-      <div class="api-key-row">
-        <input type="password" class="api-key-input" id="apiKeyInput" placeholder="sk-ant-api03-..." />
-        <button class="btn-save-key" onclick="saveApiKey()">Save Key</button>
-      </div>
-    </div>
-
-    <!-- PATIENT CONTEXT -->
-    <div class="context-panel">
-      <div class="panel-label">Patient Context</div>
-      <div class="context-grid">
-        <div class="field">
-          <div class="field-label">Age</div>
-          <input type="number" id="age" placeholder="e.g. 42" min="1" max="120" />
-        </div>
-        <div class="field">
-          <div class="field-label">Biological Sex</div>
-          <select id="sex">
-            <option value="">Select...</option>
-            <option>Male</option>
-            <option>Female</option>
-          </select>
-        </div>
-        <div class="field">
-          <div class="field-label">Activity Level</div>
-          <select id="activity">
-            <option value="">Select...</option>
-            <option>Sedentary — minimal movement</option>
-            <option>Light — occasional walks</option>
-            <option>Moderate — 2–3x per week</option>
-            <option>Active — 4–5x per week</option>
-            <option>Very active — daily training</option>
-          </select>
-        </div>
-        <div class="field">
-          <div class="field-label">Diet Quality</div>
-          <select id="diet">
-            <option value="">Select...</option>
-            <option>Poor — mostly processed/fast food</option>
-            <option>Fair — mixed, some convenience food</option>
-            <option>Good — mostly whole foods</option>
-            <option>Excellent — strict whole food diet</option>
-          </select>
-        </div>
-        <div class="field full">
-          <div class="field-label">Known conditions, medications, or relevant context</div>
-          <textarea id="context" placeholder="e.g. Type 2 diabetes on Metformin, recent viral illness, gluten sensitivity, family history of heart disease..."></textarea>
-        </div>
-        <div class="field full">
-          <div class="field-label">Primary health concern or reason for testing</div>
-          <input type="text" id="concern" placeholder="e.g. chronic fatigue, optimizing performance, annual checkup, following up on high cholesterol" />
-        </div>
-      </div>
-    </div>
-
-    <!-- LAB RESULTS INPUT -->
-    <div class="lab-panel">
-      <div class="panel-label">Lab Results</div>
-      <div class="field">
-        <textarea class="lab-textarea" id="labResults" placeholder="Paste your lab results here. Any format works — copied text from a lab portal, typed values, or a structured list like:
-
-TSH: 3.2 mIU/L (ref 0.45–4.50)
-Free T4: 0.9 ng/dL (ref 0.82–1.77)
-Total Testosterone: 312 ng/dL (ref 264–916)
-Vitamin D: 28 ng/mL (ref 30–100)
-LDL-C: 142 mg/dL
-..."></textarea>
-      </div>
-    </div>
-
-    <!-- SUBMIT -->
-    <div class="submit-panel">
-      <div class="submit-hint">
-        Results are analyzed using clinical optimal ranges,<br>not just standard lab reference intervals.
-      </div>
-      <button class="btn-analyze" id="analyzeBtn" onclick="analyze()">
-        Analyze Results →
-      </button>
-    </div>
-
-    <!-- RESPONSE -->
-    <div class="response-wrap" id="responseWrap">
-      <div class="response-header">
-        <span class="response-label">Analysis Complete</span>
-        <div class="response-actions">
-          <button class="btn-copy" id="copyBtn" onclick="copyResponse()">Copy Report</button>
-          <button class="btn-new" onclick="newAnalysis()">New Analysis</button>
-        </div>
-      </div>
-
-      <div class="response-body" id="responseBody">
-        <div class="loading-state visible" id="loadingState">
-          <div class="loading-bars">
-            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-            <div class="bar"></div><div class="bar"></div>
-          </div>
-          <div class="loading-text">Analyzing panel</div>
-          <div class="loading-subtext">Reading markers and building your report...</div>
-        </div>
-        <div class="error-state" id="errorState">
-          <div class="error-box" id="errorMsg"></div>
-        </div>
-        <div id="analysisContent"></div>
-      </div>
-    </div>
-
+  <div class="land-trust">
+    <p class="trust-line">"The difference between knowing something is off and knowing <em>why</em> it's off is a blood test you haven't gotten yet."</p>
+    <p class="trust-sub">Vital Check — Powered by AI. Reviewed by you.</p>
   </div>
 
-  <footer>
-    <p>Vital Check is for informational purposes only and does not constitute medical advice.<br>
-    All findings should be reviewed with a qualified physician. Not a substitute for professional medical care.</p>
-  </footer>
+  <div class="land-footer">
+    <p>Vital Check is for informational purposes only and does not constitute medical advice.<br>All findings should be reviewed with a qualified physician.</p>
+  </div>
+</div>
 
+<!-- ═══════════ SURVEY ═══════════ -->
+<div class="screen" id="survey">
+  <div class="survey-header">
+    <span class="survey-logo">Vital Check</span>
+    <div class="survey-progress-wrap">
+      <div class="survey-progress-fill" id="surveyProgress" style="width:0%"></div>
+    </div>
+    <span class="survey-step-label" id="surveyStepLabel">1 / 13</span>
+  </div>
+  <div class="survey-body" id="surveyBody"></div>
+</div>
+
+<!-- ═══════════ NO BLOODWORK ═══════════ -->
+<div class="screen" id="no-bloodwork">
+  <div class="branch-header">
+    <span class="branch-logo">Vital Check</span>
+  </div>
+  <div class="branch-body">
+    <div class="branch-eyebrow">Panel Recommendation</div>
+    <h2 class="branch-title">We'll build your testing roadmap.</h2>
+    <p class="branch-sub">Based on your answers, we'll generate two things: a comprehensive panel that covers everything worth knowing, and a streamlined budget panel for the highest-yield tests only. You can take either list to a direct-to-consumer lab like LabCorp OnDemand, Quest, or Function Health — no doctor's visit needed.</p>
+    <button class="btn-analyze" id="btnGeneratePanel" onclick="generatePanel()">Build My Panel Recommendations →</button>
+  </div>
+</div>
+
+<!-- ═══════════ HAS BLOODWORK ═══════════ -->
+<div class="screen" id="has-bloodwork">
+  <div class="branch-header">
+    <span class="branch-logo">Vital Check</span>
+  </div>
+  <div class="branch-body">
+    <div class="branch-eyebrow">Lab Analysis</div>
+    <h2 class="branch-title">Upload or paste your results.</h2>
+    <p class="branch-sub">Drop your lab report below. We'll remove identifying information before analysis — your name, date of birth, and patient ID are stripped automatically. PDF and image files work, or paste the text directly.</p>
+
+    <div class="privacy-note">
+      <p><strong>Privacy first.</strong> Before your results are analyzed, we automatically scan for and remove your name, date of birth, patient ID, and other identifying fields. Only marker names and values are sent for analysis.</p>
+    </div>
+
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg,.txt" onchange="handleFile(this.files[0])">
+      <span class="drop-icon">📂</span>
+      <div class="drop-title">Drop your lab report here</div>
+      <div class="drop-sub">or click to browse files</div>
+      <div class="drop-formats">PDF · PNG · JPG · TXT</div>
+    </div>
+
+    <div class="file-selected" id="fileSelected">
+      <span class="file-name" id="fileName"></span>
+      <button class="file-remove" onclick="removeFile()">✕</button>
+    </div>
+
+    <button class="toggle-manual" onclick="toggleManual()">Or paste text results manually</button>
+
+    <div class="lab-manual" id="labManual">
+      <textarea class="lab-text" id="labText" placeholder="Paste lab results here — any format works:&#10;&#10;TSH: 3.2 mIU/L (ref 0.45-4.50)&#10;Free T4: 0.9 ng/dL&#10;Total Testosterone: 312 ng/dL&#10;Vitamin D: 28 ng/mL&#10;LDL-C: 142 mg/dL&#10;..."></textarea>
+    </div>
+
+    <button class="btn-analyze" id="btnAnalyze" onclick="analyzeBloodwork()">Analyze My Results →</button>
+  </div>
+</div>
+
+<!-- ═══════════ PROCESSING ═══════════ -->
+<div class="screen" id="processing" style="display:none;min-height:100vh;align-items:center;justify-content:center">
+  <div class="proc-inner">
+    <div class="proc-visual">
+      <div class="proc-bar"></div><div class="proc-bar"></div><div class="proc-bar"></div>
+      <div class="proc-bar"></div><div class="proc-bar"></div><div class="proc-bar"></div>
+      <div class="proc-bar"></div>
+    </div>
+    <h2 class="proc-title">Analyzing your panel</h2>
+    <p class="proc-sub" id="procSub">Building your report</p>
+    <div class="proc-steps">
+      <div class="proc-step" id="step1">Reading markers...</div>
+      <div class="proc-step" id="step2">Identifying patterns...</div>
+      <div class="proc-step" id="step3">Generating recommendations...</div>
+      <div class="proc-step" id="step4">Building your report...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ RESULTS ═══════════ -->
+<div class="screen" id="results">
+  <div class="results-header">
+    <span class="results-logo">Vital Check — Results</span>
+    <div class="results-actions">
+      <button class="btn-download" onclick="downloadReport()">⬇ Download Report</button>
+      <button class="btn-restart" onclick="restart()">Start Over</button>
+    </div>
+  </div>
+  <div class="results-body">
+    <div class="results-content" id="resultsContent"></div>
+  </div>
 </div>
 
 <script>
-const SYSTEM_PROMPT = `You are Vital Check, a specialized bloodwork analysis and health reporting assistant. Your sole function is to analyze laboratory results, build patient health profiles, and generate clear, actionable reports. You do not assist with anything outside of this scope.
+// ═══════════════════════════════════
+// STATE
+// ═══════════════════════════════════
+let apiKey = localStorage.getItem('vc_key') || '';
+let answers = {};
+let currentQ = 0;
+let surveyAnswers = {};
+let uploadedFileContent = '';
+let reportMarkdown = '';
+let reportType = ''; // 'panel' or 'analysis'
 
-IDENTITY & SCOPE
-You are not a general-purpose assistant. You are a focused clinical analysis tool. If asked about topics unrelated to bloodwork, respond: "Vital Check is focused exclusively on lab result analysis. Please share lab results to get started."
+const QUESTIONS = [
+  { id:'age', q:'How old are you?', type:'single', options:['Under 30','30–39','40–49','50–59','60+'] },
+  { id:'energy', q:"How's your energy most days?", type:'single', options:['Solid — I feel sharp and ready','Decent — I hit walls occasionally','Low — I drag through the afternoon','Tanking — I\'m tired all the time'] },
+  { id:'sleep', q:'How do you sleep?', type:'single', options:['Out cold, wake up refreshed','Takes a while, but decent','Wake up mid-night, hard to fall back','Never feel rested no matter what'] },
+  { id:'weight', q:"What's going on with your weight?", type:'single', options:['Stable and where I want it','Creeping up slowly','Noticeably heavier, especially the gut','I\'ve tried — nothing moves the needle'] },
+  { id:'drive', q:'What about your drive and motivation — in the gym, at work, in bed?', type:'single', options:['Strong — I\'m motivated and engaged','Hit or miss depending on the week','Noticeably lower than it used to be','Pretty much gone'] },
+  { id:'mood', q:"How's your mental state?", type:'single', options:['Focused, calm, handling it','Stressed but managing','Irritable or anxious more than I\'d like','Foggy, flat, or down most of the time'] },
+  { id:'diet', q:'How clean is your diet?', type:'single', options:['Mostly whole foods, pretty dialed in','Reasonable — some processed, some not','Heavy on convenience food','Takeout, snacks, whatever\'s around'] },
+  { id:'exercise', q:'How active are you?', type:'single', options:['Training 4+ days a week','Moving 2–3 days a week','Occasional walks, that\'s about it','Mostly sedentary'] },
+  { id:'alcohol', q:'How often do you drink alcohol?', type:'single', options:['Rarely or never','A few drinks on weekends','Most nights, moderate amount','Daily or heavy most weeks'] },
+  { id:'symptoms', q:'Any of these feel familiar?', type:'multi', hint:'Select everything that applies.', options:['Brain fog or poor concentration','Low confidence or motivation','Aches and slow recovery','Digestive issues','Frequent colds or getting sick','High stress / can\'t unwind','Heart pounding or irregular','None of the above'] },
+  { id:'lastBloodwork', q:'When did you last have any bloodwork done?', type:'single', options:['Within the last year','2–3 years ago','More than 3 years ago','Never, or I genuinely don\'t know'] },
+  { id:'goal', q:"What's your main goal in understanding your health better?", type:'single', options:['Optimize performance — I want to be at my best','Figure out why I feel off','Prevention — I want to catch problems early','I just want to know what\'s actually going on inside'] },
+  { id:'hasBloodwork', q:'Do you have bloodwork results you\'d like analyzed today?', type:'single', options:['Yes — I have results ready to upload or paste','No — I just want to know what tests to get'] }
+];
 
-You combine deep knowledge of clinical laboratory science with the ability to communicate findings in plain, direct language. You treat every panel as a story to be read — not just individual numbers to flag.
+// ═══════════════════════════════════
+// SYSTEM PROMPT
+// ═══════════════════════════════════
+const SYSTEM_PROMPT = `You are Vital Check, a specialized bloodwork analysis and health reporting assistant. Your sole function is to analyze laboratory results and health questionnaire data to generate clear, actionable reports. You do not assist with anything outside this scope.
 
-ANALYSIS APPROACH
-When you receive lab results:
-1. Read the full panel before flagging anything. Patterns matter more than individual numbers.
-2. Identify the 2–5 most meaningful findings for this specific patient.
+IDENTITY: You are a focused clinical analysis tool. Combine deep knowledge of clinical laboratory science with plain, direct communication.
+
+ANALYSIS APPROACH:
+1. Read the full context before drawing conclusions. Patterns matter more than individual numbers.
+2. Identify the 2-5 most meaningful findings for this specific patient.
 3. Consider age, sex, and lifestyle context before assigning significance.
-4. Distinguish: CRITICAL (needs prompt medical attention), MONITOR (track over time), INFORMATIONAL (baseline/context).
-5. Look for patterns across multiple markers that tell a coherent story.
-6. Note what is working well — patients need to understand what their lifestyle is doing right.
-7. Always identify the most actionable next step.
+4. Distinguish: CRITICAL (needs prompt attention), MONITOR (track over time), INFORMATIONAL (baseline/context).
+5. Note what is working well — patients need to understand what they're doing right.
+6. Always identify the most actionable next step.
 
-REPORT STRUCTURE
-Every analysis follows this structure:
+CLINICAL OPTIMAL RANGES (apply these, not just lab reference ranges):
+- TSH: optimal 0.5-2.5 mIU/L. Above 3.0 = monitor; above 4.0 = evaluate
+- Free T3: optimal 3.0-4.2 pg/mL; Free T4: optimal 1.0-1.5 ng/dL
+- Total Testosterone (male): optimal 500-900 ng/dL; below 400 = discuss; below 300 = significant
+- Fasting glucose: optimal 72-90 mg/dL; Fasting insulin: optimal 2-6 (>10 = insulin resistance)
+- HbA1c: optimal 4.8-5.4%; LDL-C: optimal <100; LDL-P: optimal <1000; ApoB: optimal <80
+- HDL: optimal >60 (male) />70 (female); Triglycerides: optimal <100; hsCRP: <1.0 = low risk
+- Vitamin D: optimal 50-80 ng/mL; Ferritin: optimal 50-150 (male) /30-100 (female)
+- B12: optimal 500-900; Magnesium RBC: optimal 5.6-6.8; Zinc: optimal 80-115; Homocysteine: optimal <8
 
-## Overall Picture
-2–3 sentences summarizing the patient's health profile as a whole. What's the story this panel tells?
-
-## Finding [N] — [Name] | Priority: High/Moderate/Low
-For each significant finding:
-- A table of relevant markers with result, reference range, and status
-- **What This Means:** plain-English explanation with technical detail translated
-- **What To Do:** specific, actionable next steps — name tests, specialists, supplements with doses
-
-## What's Working
-Table of strong results with brief commentary.
-
-## Priority Action Plan
-Numbered next steps in order of urgency. Each: one-line title + one sentence of context.
-
----
-*This report is for informational purposes only and does not constitute medical advice. All findings should be reviewed with a qualified physician.*
-
-TONE
-- Direct and confident, never alarmist
-- Technical accuracy with plain-English translation
-- Never use filler phrases like "it's important to note"
-- Treat the patient as an intelligent adult
-- Be specific: name the supplement, specialist type, and test to order
-
-CLINICAL STANDARDS — Apply functional/optimal ranges where they differ from standard lab ranges:
-
-HORMONES: Total Testosterone (male) optimal 500–900 ng/dL; TSH optimal 0.5–2.5 mIU/L; Free T3 optimal 3.0–4.2 pg/mL; Free T4 optimal 1.0–1.5 ng/dL; Morning cortisol optimal 10–20 mcg/dL
-
-CARDIOVASCULAR: LDL-C optimal <100 mg/dL; LDL-P optimal <1000 nmol/L; ApoB optimal <80 mg/dL; HDL optimal >60 (male) />70 (female) mg/dL; Triglycerides optimal <100 mg/dL; hsCRP <1.0 low risk
-
-METABOLIC: Fasting glucose optimal 72–90 mg/dL; Fasting insulin optimal 2–6 uIU/mL (>10 = early insulin resistance); HbA1c optimal 4.8–5.4%
-
-NUTRIENTS: Vitamin D optimal 50–80 ng/mL; Magnesium RBC optimal 5.6–6.8 mg/dL; Ferritin optimal 50–150 (male) /30–100 (female) ng/mL; B12 optimal 500–900 pg/mL; Zinc optimal 80–115 ug/dL; Homocysteine optimal <8 umol/L
-
-PATTERN RECOGNITION — Name these patterns directly when present:
+PATTERN RECOGNITION — name these when present:
 - LOW TESTOSTERONE PATTERN: Low total T + low free T + LH/FSH imbalance
 - HASHIMOTO'S PATTERN: Elevated TPO + TSH >2.5 + low-normal Free T3/T4
-- INSULIN RESISTANCE PATTERN: Fasting insulin >10 + triglycerides >100 + HDL <50 + glucose >90
+- INSULIN RESISTANCE: Fasting insulin >10 + triglycerides >100 + HDL <50 + glucose >90
 - CARDIOVASCULAR RISK CLUSTER: Elevated LDL-P + ApoB + triglycerides + low HDL
 - OMEGA-3 DEFICIENCY: Low Omega-3 Index + low EPA/DHA + high AA/EPA ratio
 
-REFERRAL GUIDANCE — Be specific about specialist type:
-- Hormone issues → Endocrinologist or men's health specialist
-- Hashimoto's → Endocrinologist
-- Cardiovascular risk → Cardiologist or lipid specialist
-- Immune findings → Immunologist
-- Elevated IgM → Hematologist
-- Iron overload → Hematologist or hepatologist
-- Autoimmune markers → Rheumatologist
-- Insulin resistance → Endocrinologist or metabolic medicine specialist
+TONE: Direct and confident. Never alarmist. Technical accuracy with plain-English translation. No filler phrases. Specific — name supplements with doses, specialist types, exact tests to order next. Treat the patient as an intelligent adult.
 
-WHAT YOU DO NOT DO
-- You do not diagnose conditions — you identify patterns that warrant clinical evaluation
-- You do not prescribe medications
-- You do not include patient names or identifying information in reports
-- You do not catastrophize — a single out-of-range marker is context, not a crisis
-- You engage seriously with corrections — accuracy matters more than consistency`;
+DO NOT: diagnose conditions, prescribe medications, include patient names or identifying info, catastrophize single out-of-range markers.
 
-let apiKey = localStorage.getItem('vc_api_key') || '';
-let lastResponse = '';
+Always end reports with: *This report is for informational purposes only and does not constitute medical advice. All findings should be reviewed with a qualified physician.*`;
 
-// Check if key exists on load
-window.addEventListener('load', () => {
-  if (apiKey) {
-    document.getElementById('apiNotice').classList.remove('visible');
-    document.getElementById('apiKeyInput').value = apiKey;
-  }
-});
-
-function saveApiKey() {
-  const key = document.getElementById('apiKeyInput').value.trim();
-  if (!key.startsWith('sk-')) {
-    alert('Please enter a valid Anthropic API key starting with sk-');
-    return;
-  }
-  apiKey = key;
-  localStorage.setItem('vc_api_key', key);
-  document.getElementById('apiNotice').classList.remove('visible');
+// ═══════════════════════════════════
+// API KEY
+// ═══════════════════════════════════
+function checkKey(callback) {
+  if (apiKey) { callback(); return; }
+  document.getElementById('keyOverlay').style.display = 'flex';
+  window._keyCallback = callback;
 }
 
-function buildUserMessage() {
-  const age = document.getElementById('age').value;
-  const sex = document.getElementById('sex').value;
-  const activity = document.getElementById('activity').value;
-  const diet = document.getElementById('diet').value;
-  const context = document.getElementById('context').value.trim();
-  const concern = document.getElementById('concern').value.trim();
-  const labs = document.getElementById('labResults').value.trim();
-
-  if (!labs) return null;
-
-  let msg = 'Please analyze the following lab results.\n\n';
-
-  msg += '=== PATIENT CONTEXT ===\n';
-  if (age) msg += `Age: ${age}\n`;
-  if (sex) msg += `Biological sex: ${sex}\n`;
-  if (activity) msg += `Activity level: ${activity}\n`;
-  if (diet) msg += `Diet quality: ${diet}\n`;
-  if (context) msg += `Known conditions / medications / relevant context: ${context}\n`;
-  if (concern) msg += `Primary health concern / reason for testing: ${concern}\n`;
-  if (!age && !sex && !activity && !diet && !context && !concern) {
-    msg += 'No patient context provided. Analyze based on lab values alone and note where context would change the interpretation.\n';
-  }
-
-  msg += '\n=== LAB RESULTS ===\n';
-  msg += labs;
-
-  return msg;
+function saveKey() {
+  const val = document.getElementById('keyInput').value.trim();
+  if (!val.startsWith('sk-')) { alert('Please enter a valid Anthropic API key (starts with sk-)'); return; }
+  apiKey = val;
+  localStorage.setItem('vc_key', val);
+  document.getElementById('keyOverlay').style.display = 'none';
+  if (window._keyCallback) window._keyCallback();
 }
 
-function renderMarkdown(text) {
-  return text
-    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/^---$/gm, '<hr>')
-    .replace(/^> (.+)$/gm, '<blockquote><p>$1</p></blockquote>')
-    .replace(/^\| (.+) \|$/gm, (match) => {
-      const cells = match.slice(2, -2).split(' | ');
-      return '<tr>' + cells.map(c => c.trim().startsWith('---') ? '' : `<td>${c.trim()}</td>`).join('') + '</tr>';
-    })
-    .replace(/(<tr>.*<\/tr>\n?)+/g, (tables) => {
-      const rows = tables.trim().split('\n').filter(r => r.includes('<td>'));
-      if (rows.length > 0) {
-        const firstRow = rows[0].replace(/<td>/g, '<th>').replace(/<\/td>/g, '</th>');
-        const rest = rows.slice(1).join('\n');
-        return `<table>${firstRow}${rest}</table>`;
+// ═══════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => { s.classList.remove('active'); s.style.display = ''; });
+  const el = document.getElementById(id);
+  if (id === 'processing') { el.style.display = 'flex'; }
+  else { el.style.display = 'block'; el.classList.add('active'); }
+  window.scrollTo(0, 0);
+}
+
+function startSurvey() {
+  currentQ = 0;
+  surveyAnswers = {};
+  showScreen('survey');
+  renderQuestion(0);
+}
+
+function restart() {
+  answers = {}; surveyAnswers = {}; uploadedFileContent = ''; reportMarkdown = '';
+  showScreen('landing');
+}
+
+// ═══════════════════════════════════
+// SURVEY
+// ═══════════════════════════════════
+function renderQuestion(idx) {
+  const q = QUESTIONS[idx];
+  const total = QUESTIONS.length;
+  const pct = (idx / total) * 100;
+  document.getElementById('surveyProgress').style.width = pct + '%';
+  document.getElementById('surveyStepLabel').textContent = `${idx + 1} / ${total}`;
+
+  const saved = surveyAnswers[q.id] || (q.type === 'multi' ? [] : null);
+
+  const optsHTML = q.options.map(opt => {
+    const sel = q.type === 'multi' ? (saved || []).includes(opt) : saved === opt;
+    return `<button class="opt-btn${sel ? ' selected' : ''}" onclick="selectOpt(this,'${esc(opt)}',${q.type==='multi'})">
+      <span class="opt-check"><span class="opt-check-mark">✓</span></span>
+      <span class="opt-text">${opt}</span>
+    </button>`;
+  }).join('');
+
+  document.getElementById('surveyBody').innerHTML = `
+    <div class="q-eyebrow">Question ${idx + 1}</div>
+    <h2 class="q-text">${q.q}</h2>
+    ${q.hint ? `<p class="q-hint">${q.hint}</p>` : ''}
+    <div class="options-list">${optsHTML}</div>
+    <div class="survey-nav">
+      <button class="btn-back" onclick="surveyBack()" ${idx === 0 ? 'disabled' : ''}>← Back</button>
+      <button class="btn-next" id="surveyNext" onclick="surveyNext()" ${canAdvance(q) ? '' : 'disabled'}>
+        ${idx === total - 1 ? 'Finish →' : 'Next →'}
+      </button>
+    </div>`;
+}
+
+function esc(s) { return s.replace(/'/g,"\\'"  ).replace(/"/g,'&quot;'); }
+
+function selectOpt(btn, val, isMulti) {
+  const q = QUESTIONS[currentQ];
+  if (isMulti) {
+    if (!surveyAnswers[q.id]) surveyAnswers[q.id] = [];
+    if (val === 'None of the above') {
+      document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+      surveyAnswers[q.id] = ['None of the above'];
+      btn.classList.add('selected');
+    } else {
+      const noneBtn = [...document.querySelectorAll('.opt-btn')].find(b => b.querySelector('.opt-text').textContent === 'None of the above');
+      if (noneBtn) noneBtn.classList.remove('selected');
+      surveyAnswers[q.id] = surveyAnswers[q.id].filter(v => v !== 'None of the above');
+      if (btn.classList.contains('selected')) {
+        btn.classList.remove('selected');
+        surveyAnswers[q.id] = surveyAnswers[q.id].filter(v => v !== val);
+      } else {
+        btn.classList.add('selected');
+        surveyAnswers[q.id].push(val);
       }
-      return tables;
-    })
-    .replace(/^\* (.+)$/gm, '<li>$1</li>')
-    .replace(/^- (.+)$/gm, '<li>$1</li>')
-    .replace(/^(\d+)\. (.+)$/gm, '<li>$2</li>')
-    .replace(/(<li>.*<\/li>\n?)+/g, match => `<ul>${match}</ul>`)
-    .replace(/\n\n/g, '</p><p>')
-    .replace(/^(?!<[h|t|u|b|h|l|p])(.+)$/gm, '<p>$1</p>')
-    .replace(/<p><\/p>/g, '')
-    .replace(/_(.+?)_/g, '<em>$1</em>');
+    }
+  } else {
+    document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    surveyAnswers[q.id] = val;
+  }
+  document.getElementById('surveyNext').disabled = !canAdvance(q);
 }
 
-async function analyze() {
-  if (!apiKey) {
-    document.getElementById('apiNotice').classList.add('visible');
-    document.getElementById('apiKeyInput').focus();
+function canAdvance(q) {
+  if (!q) q = QUESTIONS[currentQ];
+  if (q.type === 'multi') return (surveyAnswers[q.id] || []).length > 0;
+  return !!surveyAnswers[q.id];
+}
+
+function surveyNext() {
+  if (!canAdvance()) return;
+  if (currentQ < QUESTIONS.length - 1) {
+    currentQ++;
+    renderQuestion(currentQ);
+    window.scrollTo(0, 0);
+  } else {
+    finishSurvey();
+  }
+}
+
+function surveyBack() {
+  if (currentQ > 0) { currentQ--; renderQuestion(currentQ); }
+}
+
+function finishSurvey() {
+  const hasBloodwork = surveyAnswers['hasBloodwork'] === 'Yes — I have results ready to upload or paste';
+  if (hasBloodwork) { showScreen('has-bloodwork'); }
+  else { showScreen('no-bloodwork'); }
+}
+
+// ═══════════════════════════════════
+// FILE HANDLING
+// ═══════════════════════════════════
+const dropZone = document.getElementById('dropZone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag-over'); if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+
+function handleFile(file) {
+  if (!file) return;
+  document.getElementById('fileName').textContent = file.name;
+  document.getElementById('fileSelected').classList.add('visible');
+
+  const ext = file.name.split('.').pop().toLowerCase();
+
+  if (ext === 'txt') {
+    const reader = new FileReader();
+    reader.onload = e => { uploadedFileContent = redactPII(e.target.result); };
+    reader.readAsText(file);
+  } else if (ext === 'pdf') {
+    // For PDFs, read as base64 for API
+    const reader = new FileReader();
+    reader.onload = e => { uploadedFileContent = e.target.result; }; // base64 dataURL
+    reader.readAsDataURL(file);
+  } else if (['png','jpg','jpeg'].includes(ext)) {
+    const reader = new FileReader();
+    reader.onload = e => { uploadedFileContent = e.target.result; }; // base64 dataURL
+    reader.readAsDataURL(file);
+  }
+}
+
+function removeFile() {
+  uploadedFileContent = '';
+  document.getElementById('fileSelected').classList.remove('visible');
+  document.getElementById('fileName').textContent = '';
+  document.getElementById('fileInput').value = '';
+}
+
+function toggleManual() {
+  const el = document.getElementById('labManual');
+  el.classList.toggle('visible');
+}
+
+// PII REDACTION — strip common identifying fields
+function redactPII(text) {
+  return text
+    .replace(/\b(Patient|Name|DOB|Date of Birth|MRN|Patient ID|Member ID|Account|Specimen ID)[:\s]+[^\n]+/gi, '[REDACTED]')
+    .replace(/\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/g, '[DATE REDACTED]')
+    .replace(/\b[A-Z][a-z]+,\s+[A-Z][a-z]+\b/g, '[NAME REDACTED]')
+    .replace(/\b\d{3}-\d{2}-\d{4}\b/g, '[SSN REDACTED]');
+}
+
+// ═══════════════════════════════════
+// BUILD SURVEY SUMMARY
+// ═══════════════════════════════════
+function buildSurveySummary() {
+  return QUESTIONS.filter(q => q.id !== 'hasBloodwork').map(q => {
+    const a = surveyAnswers[q.id];
+    const ans = Array.isArray(a) ? a.join(', ') : (a || '—');
+    return `${q.q}\nAnswer: ${ans}`;
+  }).join('\n\n');
+}
+
+// ═══════════════════════════════════
+// GENERATE PANEL (no bloodwork)
+// ═══════════════════════════════════
+async function generatePanel() {
+  checkKey(async () => {
+    showProcessing('Building your panel recommendations...');
+    animateSteps();
+
+    const summary = buildSurveySummary();
+    const prompt = `A person has completed a health questionnaire. Based on their responses, generate a personalized bloodwork panel recommendation report.
+
+QUESTIONNAIRE RESPONSES:
+${summary}
+
+Generate a report with this structure:
+
+## Your Health Profile
+2-3 sentences describing what their answers suggest about their current health picture. Be direct and specific to their responses.
+
+## Why Getting Tested Matters For You
+1-2 paragraphs specific to their profile explaining what these tests will reveal and why it matters for them personally. Make it relevant, not generic.
+
+## Comprehensive Panel — The Full Picture
+A complete panel recommendation. For each test include: test name, what it reveals, and why it's relevant to this specific person.
+
+Format as a table with columns: Test | What It Shows | Why It Matters For You | Where To Order
+
+Include all relevant panels based on their profile. End with estimated cost range if ordered through LabCorp OnDemand or Quest.
+
+## Budget Panel — The Highest-Yield Tests
+If cost is a concern, these are the 5-6 tests that will tell the most. Same table format. Explain which to prioritize if money is limited. Include estimated cost.
+
+## How To Get Tested
+Brief section: LabCorp OnDemand, Quest Direct, Function Health, Marek Health — with what each is best for.
+
+## What To Do With Your Results
+Once you have results, what's the process. Mention that they can return to Vital Check to upload results for a full analysis.
+
+---
+*This report is for informational purposes only and does not constitute medical advice.*`;
+
+    await callAPI(prompt, 'panel');
+  });
+}
+
+// ═══════════════════════════════════
+// ANALYZE BLOODWORK
+// ═══════════════════════════════════
+async function analyzeBloodwork() {
+  const manualText = document.getElementById('labText').value.trim();
+  const hasFile = uploadedFileContent !== '';
+  const hasManual = manualText !== '';
+
+  if (!hasFile && !hasManual) {
+    alert('Please upload a file or paste your lab results before continuing.');
     return;
   }
 
-  const userMessage = buildUserMessage();
-  if (!userMessage) {
-    alert('Please paste your lab results before analyzing.');
-    return;
-  }
+  checkKey(async () => {
+    showProcessing('Analyzing your bloodwork...');
+    animateSteps();
 
-  // Show response wrap and loading
-  const responseWrap = document.getElementById('responseWrap');
-  const loadingState = document.getElementById('loadingState');
-  const errorState = document.getElementById('errorState');
-  const analysisContent = document.getElementById('analysisContent');
+    const surveySummary = buildSurveySummary();
 
-  responseWrap.classList.add('visible');
-  loadingState.classList.add('visible');
-  errorState.classList.remove('visible');
-  analysisContent.innerHTML = '';
-  document.getElementById('analyzeBtn').disabled = true;
+    let messages;
 
-  responseWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (hasFile && (uploadedFileContent.startsWith('data:image') || uploadedFileContent.startsWith('data:application/pdf'))) {
+      // Image or PDF — send as vision
+      const isImage = uploadedFileContent.startsWith('data:image');
+      const base64 = uploadedFileContent.split(',')[1];
+      const mediaType = isImage
+        ? (uploadedFileContent.includes('png') ? 'image/png' : 'image/jpeg')
+        : 'application/pdf';
 
+      const contentBlocks = [
+        {
+          type: isImage ? 'image' : 'document',
+          source: { type: 'base64', media_type: mediaType, data: base64 }
+        },
+        {
+          type: 'text',
+          text: `Please analyze these lab results. Important: ignore any patient names, dates of birth, or patient IDs in the document — do not include them in your report.\n\nPATIENT CONTEXT FROM QUESTIONNAIRE:\n${surveySummary}\n\n${ANALYSIS_PROMPT}`
+        }
+      ];
+      messages = [{ role: 'user', content: contentBlocks }];
+    } else {
+      // Text content
+      const labContent = hasFile ? redactPII(uploadedFileContent) : redactPII(manualText);
+      messages = [{
+        role: 'user',
+        content: `Please analyze these lab results. Do not include any patient names or identifying information in your report.\n\nPATIENT CONTEXT FROM QUESTIONNAIRE:\n${surveySummary}\n\nLAB RESULTS:\n${labContent}\n\n${ANALYSIS_PROMPT}`
+      }];
+    }
+
+    await callAPIWithMessages(messages, 'analysis');
+  });
+}
+
+const ANALYSIS_PROMPT = `Generate a comprehensive bloodwork analysis report following this structure:
+
+## Overall Picture
+2-3 sentences summarizing the patient's health profile. What's the story this panel tells?
+
+## Key Findings
+For each significant finding (priority order):
+### Finding [N] — [Name] | Priority: High/Moderate/Low
+- Table of relevant markers: Marker | Result | Optimal Range | Status
+- **What This Means:** plain-English explanation relevant to this patient
+- **What To Do:** specific next steps — name specialists, tests, supplements with doses
+
+## What's Working
+Table of strong results with brief note on what lifestyle choices are reflected.
+
+## Priority Action Plan
+Numbered next steps in order of urgency. Title + one sentence each.
+
+---
+*This report is for informational purposes only and does not constitute medical advice. All findings should be reviewed with a qualified physician.*`;
+
+// ═══════════════════════════════════
+// API CALLS
+// ═══════════════════════════════════
+async function callAPI(prompt, type) {
+  await callAPIWithMessages([{ role: 'user', content: prompt }], type);
+}
+
+async function callAPIWithMessages(messages, type) {
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -998,54 +804,140 @@ async function analyze() {
         model: 'claude-sonnet-4-20250514',
         max_tokens: 4096,
         system: SYSTEM_PROMPT,
-        messages: [{ role: 'user', content: userMessage }]
+        messages
       })
     });
 
-    if (!response.ok) {
-      const err = await response.json();
-      throw new Error(err.error?.message || `API error ${response.status}`);
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error?.message || `API error ${res.status}`);
     }
 
-    const data = await response.json();
-    const text = data.content?.[0]?.text || '';
-    lastResponse = text;
-
-    loadingState.classList.remove('visible');
-    analysisContent.innerHTML = renderMarkdown(text);
-
+    const data = await res.json();
+    reportMarkdown = data.content?.[0]?.text || '';
+    reportType = type;
+    showResults();
   } catch (err) {
-    loadingState.classList.remove('visible');
-    errorState.classList.add('visible');
-    document.getElementById('errorMsg').textContent =
-      `Error: ${err.message}. Check your API key and try again.`;
-  } finally {
-    document.getElementById('analyzeBtn').disabled = false;
+    showScreen(type === 'panel' ? 'no-bloodwork' : 'has-bloodwork');
+    alert(`Error: ${err.message}\n\nCheck your API key and try again.`);
   }
 }
 
-function copyResponse() {
-  if (!lastResponse) return;
-  navigator.clipboard.writeText(lastResponse).then(() => {
-    const btn = document.getElementById('copyBtn');
-    btn.textContent = '✓ Copied';
-    btn.classList.add('copied');
+// ═══════════════════════════════════
+// PROCESSING ANIMATION
+// ═══════════════════════════════════
+function showProcessing(subtitle) {
+  showScreen('processing');
+  document.getElementById('procSub').textContent = subtitle;
+  document.getElementById('step1').className = 'proc-step';
+  document.getElementById('step2').className = 'proc-step';
+  document.getElementById('step3').className = 'proc-step';
+  document.getElementById('step4').className = 'proc-step';
+}
+
+function animateSteps() {
+  const steps = ['step1','step2','step3','step4'];
+  steps.forEach((id, i) => {
     setTimeout(() => {
-      btn.textContent = 'Copy Report';
-      btn.classList.remove('copied');
-    }, 2000);
+      document.getElementById(id).classList.add('active');
+    }, i * 2500);
   });
 }
 
-function newAnalysis() {
-  document.getElementById('labResults').value = '';
-  document.getElementById('context').value = '';
-  document.getElementById('concern').value = '';
-  document.getElementById('responseWrap').classList.remove('visible');
-  document.getElementById('analysisContent').innerHTML = '';
-  lastResponse = '';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  document.getElementById('labResults').focus();
+// ═══════════════════════════════════
+// RESULTS
+// ═══════════════════════════════════
+function showResults() {
+  showScreen('results');
+  document.getElementById('resultsContent').innerHTML = renderMD(reportMarkdown);
+}
+
+function renderMD(text) {
+  return text
+    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/^---+$/gm,'<hr>')
+    .replace(/^> (.+)$/gm,'<blockquote><p>$1</p></blockquote>')
+    .replace(/^\| (.+) \|$/gm, match => {
+      const cells = match.slice(2,-2).split(' | ');
+      return '<tr>' + cells.map(c => c.trim().match(/^[-:]+$/) ? '' : `<td>${c.trim()}</td>`).join('') + '</tr>';
+    })
+    .replace(/(<tr>(?:<td>.*?<\/td>)*<\/tr>\n?)+/g, block => {
+      const rows = block.trim().split('\n').filter(r => r.includes('<td>'));
+      if (!rows.length) return block;
+      const head = rows[0].replace(/<td>/g,'<th>').replace(/<\/td>/g,'</th>');
+      return `<table>${head}${rows.slice(1).join('')}</table>`;
+    })
+    .replace(/^[-*] (.+)$/gm,'<li>$1</li>')
+    .replace(/^\d+\. (.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>.+<\/li>\n?)+/g, m => `<ul>${m}</ul>`)
+    .replace(/\n\n+/g,'</p><p>')
+    .replace(/^(?!<[htubpl])(.+)$/gm,'<p>$1</p>')
+    .replace(/<p><\/p>/g,'')
+    .replace(/<p>(<[htubpl])/g,'$1')
+    .replace(/(<\/[htubpl][^>]*>)<\/p>/g,'$1');
+}
+
+// ═══════════════════════════════════
+// DOWNLOAD
+// ═══════════════════════════════════
+function downloadReport() {
+  const title = reportType === 'panel' ? 'Vital Check — Panel Recommendations' : 'Vital Check — Bloodwork Analysis';
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${title}</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne+Mono&family=Syne:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080a0c;color:#e8ecf0;font-family:'Syne',sans-serif;padding:0;line-height:1.6}
+.report-header{background:#0e1114;border-bottom:1px solid #1c2128;padding:32px 48px;display:flex;align-items:center;justify-content:space-between}
+.rh-logo{font-family:'Syne Mono',monospace;font-size:12px;letter-spacing:0.2em;color:#c8f060;text-transform:uppercase}
+.rh-date{font-family:'Syne Mono',monospace;font-size:10px;color:#4a5568;letter-spacing:0.1em}
+.report-body{max-width:760px;margin:0 auto;padding:56px 48px 80px}
+h2{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:#e8ecf0;margin:40px 0 14px;padding-bottom:10px;border-bottom:1px solid #252d38}
+h2:first-child{margin-top:0}
+h3{font-family:'Syne Mono',monospace;font-size:10px;color:#c8f060;letter-spacing:0.2em;text-transform:uppercase;margin:28px 0 10px}
+p{font-size:14px;color:#8899aa;line-height:1.85;margin-bottom:14px}
+strong{color:#e8ecf0;font-weight:600}
+em{font-style:italic;color:#aabbcc}
+ul,ol{padding-left:20px;margin-bottom:14px}
+li{font-size:14px;color:#8899aa;line-height:1.8;margin-bottom:6px}
+hr{border:none;border-top:1px solid #252d38;margin:32px 0}
+blockquote{border-left:3px solid #c8f060;padding:12px 18px;background:rgba(200,240,96,0.05);border-radius:0 6px 6px 0;margin:16px 0}
+blockquote p{color:#aaccaa;margin:0}
+table{width:100%;border-collapse:collapse;margin:16px 0 24px;font-size:13px}
+th{background:#13171c;color:#e8ecf0;font-family:'Syne Mono',monospace;font-size:9px;font-weight:400;letter-spacing:0.15em;text-transform:uppercase;padding:10px 14px;text-align:left;border:1px solid #252d38}
+td{padding:9px 14px;border:1px solid #1c2128;color:#8899aa;font-size:13px;line-height:1.5}
+tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+.report-footer{background:#0e1114;border-top:1px solid #1c2128;padding:24px 48px;text-align:center}
+.report-footer p{font-family:'Syne Mono',monospace;font-size:10px;color:#4a5568;letter-spacing:0.06em;line-height:1.6}
+@media print{body{background:#fff;color:#000}.report-header{background:#f4f4f4}.report-footer{background:#f4f4f4}p,li,td{color:#333}h2{color:#000}th{background:#e0e0e0;color:#000}hr{border-color:#ddd}blockquote{background:#f9f9f9}}
+</style>
+</head>
+<body>
+<div class="report-header">
+  <span class="rh-logo">● Vital Check</span>
+  <span class="rh-date">Generated ${new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}</span>
+</div>
+<div class="report-body">${renderMD(reportMarkdown)}</div>
+<div class="report-footer">
+  <p>This report is for informational purposes only and does not constitute medical advice.<br>
+  All findings should be reviewed with a qualified physician. Generated by Vital Check.</p>
+</div>
+</body>
+</html>`;
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = reportType === 'panel' ? 'vital-check-panel-recommendations.html' : 'vital-check-bloodwork-analysis.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
 }
 </script>
 </body>
